@@ -25,6 +25,9 @@ Public Class insert
 
         DataGridView1.DataSource = dt
 
+        Columns()
+
+        DataGridView2.AllowUserToAddRows = False
     End Sub
 
     Private Function GetFile() As StreamReader
@@ -196,19 +199,38 @@ Public Class insert
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
 
+
+        Dim a As New List(Of String)
+        For s = 0 To DataGridView2.Rows.Count - 1
+            If DataGridView2.Rows(s).Visible = True Then
+                a.Add(DataGridView2.Rows(s).Cells(0).Value)
+            End If
+        Next
+
         Label1.Text = "実行中"
 
         Dim dt2 As New DataTable
+        Dim v As Integer = 0
 
         Using db As New dbConnection()
             Dim sql As String = ""
 
             sql = ""
-            sql &= " select d as 商品名,"
-            sql &= " h as 適用開始日"
+            sql &= " select "
+            For Each s In a
+                v += 1
+                If v = a.Count Then
+                    sql &= s
+                    Exit For
+                End If
+                sql &= s & ","
+
+            Next
+            'sql &= " as 商品名,"
+            'sql &= " h as 適用開始日"
             sql &= " from mst_inserts3 "
             sql &= " where id <= 10000"
-            sql &= " and"
+            sql &= " And"
             sql &= " ( h >= '2021/5/01' and h <= '2021/5/31')"
 
             dt2 = db.getDtSql(sql)
@@ -233,6 +255,32 @@ Public Class insert
     Private Sub insert_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Label1.Text = "ファイルを読み込んでください"
         Label1.ForeColor = Color.Red
+    End Sub
+
+    Private Sub Columns()
+        Dim DtColumns As Integer = dt.Columns.Count
+        Dim dt3 As New DataTable
+        dt3.Columns.Add("タイトル")
+
+        Dim dr As DataRow
+
+        For a = 0 To DtColumns - 1
+            dr = dt3.NewRow
+            dr("タイトル") = dt.Columns(a)
+            dt3.Rows.Add(dr)
+        Next
+        DataGridView2.DataSource = dt3
+        Dim column As New DataGridViewCheckBoxColumn
+        DataGridView2.Columns.Add(column)
+
+        Dim s = DataGridView2.Rows(1).Cells(0).Value
+
+        For a = 0 To DataGridView2.Rows.Count - 1
+            If DataGridView2.Rows(a).Cells(0).Value = "JANCODE" Or
+                DataGridView2.Rows(a).Cells(0).Value = "販売元" Then
+                DataGridView2.Rows(a).Cells(1).Value = True
+            End If
+        Next
     End Sub
 
     Private Sub Csv(dt2 As DataTable)
@@ -426,5 +474,25 @@ Public Class insert
                 MessageBox.Show(i)
             End If
         Next
+    End Sub
+
+    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+
+
+        Dim i As New List(Of Integer)
+
+
+        For a = 0 To DataGridView2.Rows.Count - 1
+            If DataGridView2.Rows(a).Cells(1).Value = False Then
+                i.Add(a)
+            End If
+            'DataGridView.Rows.RemoveAt(行Index) Then
+        Next
+
+        If i.Count > 0 Then
+            For Each n In i
+                DataGridView2.Rows(n).Visible = False
+            Next
+        End If
     End Sub
 End Class
