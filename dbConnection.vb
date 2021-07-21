@@ -9,7 +9,7 @@ Public Class dbConnection
     'デストラクト済みか否かのフラグ
     Private disposedValue As Boolean '自動生成コード
 
-    Private Property conStr As String = ("Server=localhost;Port=5432;User Id=postgres;Password=Hiro1645;Database=vending_machine2;")
+    Private Property conStr As String 
     Private Property sqlCon As NpgsqlConnection
     Private Property sqlTrn As NpgsqlTransaction
     Private Property sqlCmd As NpgsqlCommand
