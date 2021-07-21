@@ -5,6 +5,7 @@ Imports Microsoft.Office.Interop
 Imports System.Runtime.InteropServices
 Imports System.ComponentModel
 Imports System.Xml
+
 Public Class insert
     Private dt As DataTable
 
@@ -229,9 +230,9 @@ Public Class insert
             'sql &= " as 商品名,"
             'sql &= " h as 適用開始日"
             sql &= " from mst_inserts3 "
-            sql &= " where id <= 10000"
-            sql &= " And"
-            sql &= " ( h >= '2021/5/01' and h <= '2021/5/31')"
+            'sql &= " where id <= 10000"
+            'sql &= " And"
+            'sql &= " ( h >= '2021/5/01' and h <= '2021/5/31')"
 
             dt2 = db.getDtSql(sql)
 
@@ -432,6 +433,7 @@ Public Class insert
                                            New XElement("Height", Me.ClientSize.Height), New XElement("X", Me.Location.X),
                                              New XElement("Y", Me.Location.Y)))
 
+
         Dim xmlFile = XElement.Load(fileName)
 
         xmlFile.Add(person)
@@ -467,9 +469,7 @@ Public Class insert
 
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
 
-
         Dim i As New List(Of Integer)
-
 
         For a = 0 To DataGridView2.Rows.Count - 1
             If DataGridView2.Rows(a).Cells(1).Value = False Then
@@ -483,5 +483,12 @@ Public Class insert
                 DataGridView2.Rows(n).Visible = False
             Next
         End If
+
+    End Sub
+
+    Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
+        For a = 0 To DataGridView2.Rows.Count - 1
+            DataGridView2.Rows(a).Visible = True
+        Next
     End Sub
 End Class
