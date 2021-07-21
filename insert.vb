@@ -9,7 +9,7 @@ Public Class insert
     Private dt As DataTable
 
     Sub New()
-        aa()
+
         ' この呼び出しはデザイナーで必要です。
         InitializeComponent()
 
@@ -464,17 +464,6 @@ Public Class insert
 
     End Sub
 
-    Private Sub aa()
-        Dim check As Integer() = {1, 2, 3, 4, 5}
-        Dim aa As Integer = Array.IndexOf(check, 4)
-        Dim i As Integer = 0
-        For Each a In check
-            i += 1
-            If a = 4 Then
-                MessageBox.Show(i)
-            End If
-        Next
-    End Sub
 
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
 
