@@ -8,6 +8,8 @@ Imports System.Xml
 
 Public Class insert
     Private dt As DataTable
+    Private dic As New Dictionary(Of String, Boolean)
+    Private flug As Boolean = False
 
     Sub New()
 
@@ -29,6 +31,7 @@ Public Class insert
         Columns()
 
         DataGridView2.AllowUserToAddRows = False
+
     End Sub
 
     Private Function GetFile() As StreamReader
@@ -63,7 +66,9 @@ Public Class insert
             Return Nothing
         End If
         Return SR
+#Disable Warning BC42105 ' 関数が、すべてのコード パスで値を返しません
     End Function
+#Enable Warning BC42105 ' 関数が、すべてのコード パスで値を返しません
 
     Private Sub GetGrid()
         Dim SR As StreamReader = GetFile()
@@ -111,7 +116,6 @@ Public Class insert
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
 
 
-
         If dt Is Nothing Then
             MessageBox.Show("ファイルを読み込んでください")
             Exit Sub
@@ -133,9 +137,8 @@ Public Class insert
         End If
 
         dt = DataGridView1.DataSource
+
         Dim dt2 As DataTable
-
-
 
         Dim i As Integer = 10
         Using db As New dbConnection()
@@ -149,6 +152,7 @@ Public Class insert
                 Dim count As Integer = dt.Rows.Count
                 Dim check As Integer
                 Dim aa As Integer
+
                 sql = ""
                 sql &= " insert into mst_inserts3 "
                 sql &= " (a, b, c, d, f,g,h,i,j,k,l) values "
@@ -200,12 +204,12 @@ Public Class insert
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
 
+        Dim Lst As New List(Of String)
 
-        Dim a As New List(Of String)
         For s = 0 To DataGridView2.Rows.Count - 1
-            If DataGridView2.Rows(s).Visible = True Then
-                a.Add(DataGridView2.Rows(s).Cells(0).Value)
-            End If
+            'If DataGridView2.Rows(s).Visible = True Then
+            Lst.Add(DataGridView2.Rows(s).Cells(0).Value)
+            'End If
         Next
 
         Label1.Text = "実行中"
@@ -218,9 +222,9 @@ Public Class insert
 
             sql = ""
             sql &= " select "
-            For Each s In a
+            For Each s In Lst
                 v += 1
-                If v = a.Count Then
+                If v = Lst.Count Then
                     sql &= s
                     Exit For
                 End If
@@ -274,14 +278,6 @@ Public Class insert
         Dim column As New DataGridViewCheckBoxColumn
         DataGridView2.Columns.Add(column)
 
-        Dim s = DataGridView2.Rows(1).Cells(0).Value
-
-        For a = 0 To DataGridView2.Rows.Count - 1
-            If DataGridView2.Rows(a).Cells(0).Value = "JANCODE" Or
-                DataGridView2.Rows(a).Cells(0).Value = "販売元" Then
-                DataGridView2.Rows(a).Cells(1).Value = True
-            End If
-        Next
     End Sub
 
     Private Sub Csv(dt2 As DataTable)
@@ -311,9 +307,8 @@ Public Class insert
                         ' 列
                         For j As Integer = 0 To ColumnCount - 1
                             strList.Add(dt2(i)(j))
-                            'strList.Add(DataGridView1.Columns(j).HeaderCell.Value)
                         Next
-                        'Dim strArray As String() = strList.ToArray() ' 配列へ変換
+                        Dim strArray As String() = strList.ToArray() ' 配列へ変換
 
 
                         ' CSV 形式に変換
@@ -337,7 +332,6 @@ Public Class insert
         Dim timestanpText As String = Format(Now, "yyyyMMdd")
 
         Dim aa As Integer = dt2.Rows.Count
-
 
 
         '保存ディレクトリとファイル名を設定
@@ -471,24 +465,91 @@ Public Class insert
 
         Dim i As New List(Of Integer)
 
+        Dim value As New List(Of String)
+
+
+        If flug = False Then
+            For aaa = 0 To DataGridView2.Rows.Count - 1
+                dic.Add(DataGridView2.Rows(aaa).Cells(0).Value, DataGridView2.Rows(aaa).Cells(1).Value)
+            Next
+            flug = True
+        End If
+
+
         For a = 0 To DataGridView2.Rows.Count - 1
             If DataGridView2.Rows(a).Cells(1).Value = False Then
                 i.Add(a)
+                value.Add(DataGridView2.Rows(a).Cells(0).Value)
             End If
-            'DataGridView.Rows.RemoveAt(行Index) Then
         Next
 
-        If i.Count > 0 Then
-            For Each n In i
-                DataGridView2.Rows(n).Visible = False
+        Dim data As DataTable = DataGridView2.DataSource
+
+        Dim rows As DataRow()
+
+        rows = data.Select("タイトル = 'JANCODE'")
+
+
+        For Each t As String In value
+
+            rows = data.Select("タイトル =  '" & t & "' ")
+
+            For Each Row As DataRow In rows
+                'MsgBox(Row.Item("rowID"))
+                data.Rows.Remove(Row)
             Next
-        End If
+
+        Next
+
+        DataGridView2.DataSource = Nothing
+        DataGridView2.Columns.Clear()
+
+        DataGridView2.DataSource = data
+
+        Dim column As New DataGridViewCheckBoxColumn
+        DataGridView2.Columns.Add(column)
+
+        For check = 0 To DataGridView2.Rows.Count - 1
+            DataGridView2.Rows(check).Cells(1).Value = True
+        Next
 
     End Sub
 
     Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
-        For a = 0 To DataGridView2.Rows.Count - 1
-            DataGridView2.Rows(a).Visible = True
+
+
+        Dim dic2 As New Dictionary(Of String, Boolean)
+
+        For aaa = 0 To DataGridView2.Rows.Count - 1
+            dic2.Add(DataGridView2.Rows(aaa).Cells(0).Value, DataGridView2.Rows(aaa).Cells(1).Value)
         Next
+
+        DataGridView2.DataSource = Nothing
+
+        DataGridView2.Columns.Clear()
+
+        Dim data As New DataTable
+
+        data.Columns.Add("タイトル")
+
+        For Each a In dic
+            data.Rows.Add(a.Key)
+        Next
+
+        DataGridView2.DataSource = data
+
+        Dim column As New DataGridViewCheckBoxColumn
+        DataGridView2.Columns.Add(column)
+
+
+        For k = 0 To DataGridView2.Rows.Count - 1
+            For Each t In dic2
+                If DataGridView2.Rows(k).Cells(0).Value = t.Key Then
+                    DataGridView2.Rows(k).Cells(1).Value = True
+                End If
+            Next
+        Next
+
     End Sub
+
 End Class
