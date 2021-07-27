@@ -19,7 +19,7 @@ Public Class insert
         ' InitializeComponent() 呼び出しの後で初期化を追加します。
         DataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
 
-        write()
+        'write()
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
@@ -400,65 +400,65 @@ Public Class insert
         objExcel = Nothing
     End Sub
 
-    Private Sub write()
+    'Private Sub write()
 
-        Dim xmlDoc As New XmlDocument()
+    '    Dim xmlDoc As New XmlDocument()
 
-        Const fileName As String = "XMLFile1.xml"
+    '    Const fileName As String = "XMLFile1.xml"
 
-        xmlDoc.Load(fileName)
+    '    xmlDoc.Load(fileName)
 
-        Dim node As XmlNode = xmlDoc.DocumentElement.SelectSingleNode(Me.Name)
+    '    Dim node As XmlNode = xmlDoc.DocumentElement.SelectSingleNode(Me.Name)
 
-        '更新かける
-        If Not node Is Nothing Then
-            node.Item("Width").InnerText = Me.ClientSize.Width.ToString
-            node.Item("Height").InnerText = Me.ClientSize.Height.ToString
-            node.Item("X").InnerText = Me.Location.X.ToString
-            node.Item("Y").InnerText = Me.Location.Y.ToString
+    '    '更新かける
+    '    If Not node Is Nothing Then
+    '        node.Item("Width").InnerText = Me.ClientSize.Width.ToString
+    '        node.Item("Height").InnerText = Me.ClientSize.Height.ToString
+    '        node.Item("X").InnerText = Me.Location.X.ToString
+    '        node.Item("Y").InnerText = Me.Location.Y.ToString
 
-            xmlDoc.Save(fileName)
+    '        xmlDoc.Save(fileName)
 
-            Return
-        End If
+    '        Return
+    '    End If
 
-        'インサートする
-        Dim person = New XElement(New XElement(Me.Name, New XElement("Width", Me.ClientSize.Width),
-                                           New XElement("Height", Me.ClientSize.Height), New XElement("X", Me.Location.X),
-                                             New XElement("Y", Me.Location.Y)))
-
-
-        Dim xmlFile = XElement.Load(fileName)
-
-        xmlFile.Add(person)
-
-        xmlFile.Save(fileName)
-
-    End Sub
-
-    Private Sub Read()
+    '    'インサートする
+    '    Dim person = New XElement(New XElement(Me.Name, New XElement("Width", Me.ClientSize.Width),
+    '                                       New XElement("Height", Me.ClientSize.Height), New XElement("X", Me.Location.X),
+    '                                         New XElement("Y", Me.Location.Y)))
 
 
-        Const fileName As String = "XMLFile1.xml"
+    '    Dim xmlFile = XElement.Load(fileName)
 
-        Dim xmlDoc As New XmlDocument()
-        xmlDoc.Load(fileName)
+    '    xmlFile.Add(person)
 
-        Dim node As XmlNode = xmlDoc.DocumentElement.SelectSingleNode(Me.Name)
+    '    xmlFile.Save(fileName)
 
-        If node Is Nothing Then
-            Return
-        End If
+    'End Sub
 
-        Dim size As Size = New Size(CInt(node.Item("Width").InnerText), CInt(node.Item("Height").InnerText))
+    'Private Sub Read()
 
-        Dim point As Point = New Point(CInt(node.Item("X").InnerText), CInt(node.Item("Y").InnerText))
 
-        Me.ClientSize = size
+    '    Const fileName As String = "XMLFile1.xml"
 
-        Me.Location = point
+    '    Dim xmlDoc As New XmlDocument()
+    '    xmlDoc.Load(fileName)
 
-    End Sub
+    '    Dim node As XmlNode = xmlDoc.DocumentElement.SelectSingleNode(Me.Name)
+
+    '    If node Is Nothing Then
+    '        Return
+    '    End If
+
+    '    Dim size As Size = New Size(CInt(node.Item("Width").InnerText), CInt(node.Item("Height").InnerText))
+
+    '    Dim point As Point = New Point(CInt(node.Item("X").InnerText), CInt(node.Item("Y").InnerText))
+
+    '    Me.ClientSize = size
+
+    '    Me.Location = point
+
+    'End Sub
 
 
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
@@ -495,7 +495,6 @@ Public Class insert
             rows = data.Select("タイトル =  '" & t & "' ")
 
             For Each Row As DataRow In rows
-                'MsgBox(Row.Item("rowID"))
                 data.Rows.Remove(Row)
             Next
 
@@ -545,7 +544,7 @@ Public Class insert
         For k = 0 To DataGridView2.Rows.Count - 1
             For Each t In dic2
                 If DataGridView2.Rows(k).Cells(0).Value = t.Key Then
-                    DataGridView2.Rows(k).Cells(1).Value = True
+                    DataGridView2.Rows(k).Cells(1).Value = t.Value
                 End If
             Next
         Next
